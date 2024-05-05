@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title >Chat with AI Assistant</title>
+    <style>        /* 设置标题样式 */
+        h1 {
+            text-align: center; /* 居中 */
+            font-size: 20px; /* 调整字体大小 */
+            font-family: 'Segoe UI', Arial, sans-serif; /* 示例字体，根据喜好选择 */
+            color: #333; /* 字体颜色，可以根据背景色调整 */
+            background-color: #f0f0f0; /* 背景颜色 */
+            padding: 10px; /* 内边距，让标题看起来更舒适 */
+            margin: 0; /* 移除默认外边距 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 可选：添加阴影效果 */
+        }
+
+        /* 如果需要，可以进一步调整body或其他元素的样式 */
+        body {
+            font-family: Arial, sans-serif; /* 设置正文字体 */
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9; /* 可选：设置页面背景色 */
+        }
+    </style>
+
+    <style>
+        {#  聊天框风格  #}
+        .chat-container {
+            width: 1200px; /* 保持固定宽度 */
+            height: 400px;
+            max-width: 1200px;
+            margin: 30px auto;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            background-image: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
+            max-height: 400px;
+            overflow-y: auto; /* 仅允许垂直滚动 */
+        }
+
+        .message {
+            margin: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: normal; /* 允许正常换行 */
+            overflow-wrap: break-word; /* 当单词过长时强制换行 */
+        }
+
+        .user-message {
+            background-color: #DCF8C6; /* 用户消息气泡颜色 */
+            border-radius: 12px;
+            padding: 10px;
+            position: relative; /* 用于气泡箭头定位 */
+             font-family: Arial, sans-serif; /* 或者您喜欢的其他字体 */
+            font-size: 14px; /* 根据需要设置字体大小 */
+        }
+
+        .user-message::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: -6px;
+            border-style: solid;
+            border-width: 8px 8px 8px 0;
+            border-color: transparent #DCF8C6;
+        }
+
+        .assistant-message {
+            background-color: #E1EAF5; /* AI消息气泡颜色 */
+            border-radius: 12px;
+            padding: 12px;
+            position: relative;
+            text-align: left;
+        }
+
+        .assistant-message::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: -6px;
+            border-style: solid;
+            border-width: 8px 0 8px 8px;
+            border-color: transparent #E1EAF5;
+        }
+
+/* 输入框和按钮样式保持之前调整，根据需要微调 */
+        {#ai回答框背景色#}
+        .code-container pre,
+        .assistant-message {
+            font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background-color: #d3e0dc;
+        }
+        .assistant-message::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: -6px;
+            border-style: solid;
+            border-width: 8px 0 8px 8px;
+            border-color: transparent #E1EAF5;
+        }
+
+        {#用户输入框#}
+        /* 调整输入框和按钮容器，使其固定在底部 */
+        .input-container {
+            position: fixed; /* 固定在底部 */
+            bottom: 20px; /* 距离底部的距离 */
+            left: 20px; /* 距离左侧的距离，可根据需要调整 */
+            right: 20px; /* 距离右侧的距离，确保两侧都有间隙 */
+            display: flex;
+            justify-content: space-between; /* 按钮和输入框之间留空 */
+            align-items: center; /* 垂直居中对齐 */
+            z-index: 100; /* 确保输入框在最上层 */
+        }
+
+        /* 输入框样式保持不变，但可能需要根据新的布局微调 */
+        #user-input {
+            flex-grow: 1; /* 让输入框自适应宽度，占据剩余空间 */
+            min-width: 0; /* 确保输入框可以缩小到最小宽度 */
+            padding: 10px; /* 增大内边距以提升输入体验 */
+        }
+
+        #send-btn {
+            padding: 10px 20px; /* 增大按钮的内边距 */
+            /* 可以根据需要调整按钮的其他样式 */
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Chat with AI Assistant</h1>
+    <div class="chat-container" id="chat-container">
+        <div class="message assistant-message">AI Assistant: 你好！</div>
+    </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Type your message here">
+        <button id="send-btn">Send</button>
+    </div>
+
+    <script>        hljs.highlightAll();
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        function sendMessage(userMessage) {
+            chatContainer.insertAdjacentHTML('beforeend', `<div class="message user-message">你: ${userMessage}</div>`);
+            userInput.value = '';
+            scrollToBottom();
+        }
+
+        function receiveMessage(assistantMessage) {
+            chatContainer.insertAdjacentHTML('beforeend', `
+                <div class="message assistant-message">
+                    AI Assistant:
+                    <pre class="hljs">${assistantMessage}</pre>
+                </div>
+            `);
+            hljs.highlightBlock(chatContainer.lastElementChild.querySelector('pre')); // 高亮最新代码块
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        sendBtn.addEventListener('click', () => {
+            const message = userInput.value.trim();
+            if (message) {
+                sendMessage(message);
+
+                // 发送消息到后端，并接收回复 、路由/chat/
+                fetch('/api/v1/webai/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken, // 确保添加正确的CSRF令牌
+                    },
+                    body: JSON.stringify({ message: message }), // 发送消息到后端
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error ${response.status}`); // 确保响应成功
+                    return response.json();
+                })
+                .then(data => {
+                    receiveMessage(data.response);  // 接收后端返回的回复（ai回答的内容）
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    receiveMessage("An error occurred. Please try again later.");
+                });
+            }
+        });
+    </script>
+</body>
+</html>
