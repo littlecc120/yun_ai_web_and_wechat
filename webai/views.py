@@ -1,11 +1,10 @@
 import json
-
 from django.shortcuts import render
-from django.contrib.sessions.backends.db import SessionStore
 from django.http import JsonResponse
-from openai import OpenAI
+from openai import OpenAI   #大模型openai库
+from django.conf import settings
 
-api_key = "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"
+api_key = settings.API_KEY
 def chat_view(request):
     if request.method == 'POST':
         # message = request.POST.get('message')
