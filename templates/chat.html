@@ -151,6 +151,14 @@
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
 
+        // 添加回车键监听事件
+        userInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault(); // 阻止默认的表单提交或页面跳转行为
+                sendBtn.click(); // 模拟点击发送按钮
+            }
+        });
+
         function sendMessage(userMessage) {
             chatContainer.insertAdjacentHTML('beforeend', `<div class="message user-message">你: ${userMessage}</div>`);
             userInput.value = '';
@@ -182,7 +190,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken, // 确保添加正确的CSRF令牌
+                        {#'X-CSRFToken': csrftoken, // 确保添加正确的CSRF令牌#}
                     },
                     body: JSON.stringify({ message: message }), // 发送消息到后端
                 })

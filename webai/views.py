@@ -5,7 +5,7 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.http import JsonResponse
 from openai import OpenAI
 
-api_key = "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"
+api_key = "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"
 def chat_view(request):
     if request.method == 'POST':
         # message = request.POST.get('message')
@@ -33,7 +33,7 @@ def chat_view(request):
             {"role": "system",
              "content": "使用中文简体回答输出：你是一个小新助手。你总是提供既正确又有用的经过深思熟虑的回答。"},
             {"role": "user",
-             "content": "使用中文简体回答输出：你好，请向第一次打开这个程序的人介绍一下自己。请简洁明了。\n"},
+             "content": "使用中文简体回答输出：你好，请向第一次打开这个程序的人介绍一下自己。请简洁明了。"},
             {"role": "assistant",
              "content": "使用中文简体回答问题：你好，我是一个小新助手。我是一个智能助手，我帮助用户解决各种问题。\n"},
         ])
@@ -45,15 +45,15 @@ def chat_view(request):
 
         # 创建当前对话的列表、取history最后一条记录、也就是用户user提问的最新一条信息
         #这里只会保存用户user提问的最新一条信息、每次循环都是覆盖之前的消息
-        current_chat = [{"role": "user", "content": history[-1]["content"]}]
-        print("current_chat:", current_chat)
+        # current_chat = [{"role": "user", "content": history[-1]["content"]}]
+        # print("current_chat:", current_chat)
         # 如果历史记录中的倒数第二个元素{字典}存在 assistant 消息（这是assistant 角色-后面都是这个角色给用户回答）
         # 则将其插入到 current_chat 中、只支持前后一条信息的联动
-        if len(history) > 1 and history[-2]["role"] == "assistant":
-            # 将history中的assistant消息插入到current_chat的开头-下标是0、所以这里的current_chat里面就是两个元素(助手回答的和用户的提问)
-            current_chat.insert(0, {"role": "assistant", "content": history[-2]["content"]})
-
-            print("current_chat2:", current_chat)
+        # if len(history) > 1 and history[-2]["role"] == "assistant":
+        #     # 将history中的assistant消息插入到current_chat的开头-下标是0、所以这里的current_chat里面就是两个元素(助手回答的和用户的提问)
+        #     current_chat.insert(0, {"role": "assistant", "content": history[-2]["content"]})
+        #
+        #     print("current_chat2:", current_chat)
 
         # session = request.session['history'] = history
 
