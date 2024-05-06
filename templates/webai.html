@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with AI Assistant</title>
+    <style>
+        .chat-container {
+            width: 80%;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        {##}
+        .message {
+            margin: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        {#用户输入框背景色#}
+        .user-message {
+            background-color: gainsboro;
+        }
+        {#ai回答框背景色#}
+        .assistant-message {
+            background-color: #d3e0dc;
+        }
+        {#用户输入框#}
+        .input-container {
+            margin-top: 20px;
+            display: flex;
+        }
+        #user-input {
+            flex: 1;
+            padding: 5px;
+        }
+        {#发送按钮#}
+        #send-btn {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat with AI Assistant</h1>
+    <div class="chat-container" id="chat-container">
+        <div class="message assistant-message">AI Assistant: 你好！</div>
+    </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Type your message here">
+        <button id="send-btn">Send</button>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        sendBtn.addEventListener('click', () => {
+            const message = userInput.value;
+            chatContainer.innerHTML += `<div class="message user-message">You: ${message}</div>`;
+            userInput.value = '';
+
+            fetch('/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // 保持不变
+                    {#'X-CSRFToken': csrftoken, // CSRF保护的Token#}
+                },
+                body: JSON.stringify({ message: message }), // 保持不变
+                }) // 添加两个.then()以处理响应
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+                })
+            .then(data => {
+                chatContainer.innerHTML += `<div class="message assistant-message">AI Assistant:<br><pre>${data.response}</pre></div>`;
+            });
+        });
+    </script>
+</body>
+</html>
